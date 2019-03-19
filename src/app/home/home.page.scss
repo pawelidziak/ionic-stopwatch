@@ -1,1 +1,21 @@
+::ng-deep {
+  .picker-wrapper {
+    color: white !important;
+  }
 
+}
+
+.total-time-container{
+  color: #f4f5f8;
+  font-size: 3em;
+  width: 100%;
+  text-align: center;
+  p {
+    margin-top: 0;
+    color: #565656;
+  }
+}
+
+.circle-container {
+  height: 50%;
+}
