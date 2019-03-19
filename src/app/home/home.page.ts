@@ -1,4 +1,5 @@
 import {Component} from '@angular/core';
+import {Insomnia} from '@ionic-native/insomnia/ngx';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +31,11 @@ export class HomePage {
 
   countDownTimer: any = false;
 
+  constructor(private insomnia: Insomnia) {
+    let autoHide: boolean = true;
+    // this.navigationBar.setUp(autoHide);
+  }
+
 
   touchMe() {
     console.log('touched');
@@ -37,12 +43,13 @@ export class HomePage {
 
   startTimer() {
 
-    if(this.timer) {
+    if (this.timer) {
       clearInterval(this.timer);
       clearInterval(this.countDownTimer);
     }
-    if(!this.overallTimer) {
+    if (!this.overallTimer) {
       this.progressTimer();
+      this.insomnia.keepAwake()
     }
 
     this.timer = false;
@@ -81,6 +88,25 @@ export class HomePage {
   }
 
   stopTimer() {
+    clearInterval(this.countDownTimer);
+    clearInterval(this.timer);
+    clearInterval(this.overallTimer);
+    this.countDownTimer = false;
+    this.overallTimer = false;
+    this.timer = false;
+    this.percent = 0;
+    this.progress = 0;
+    this.elapsed = {
+      h: '00',
+      m: '00',
+      s: '00'
+    }
+    this.timeLeft = {
+      m: '00',
+      s: '00'
+    }
+    this.remainingTime = `${this.pad(this.timeLeft.m, 2)}:${this.pad(this.timeLeft.s, 2)}`;
+    this.insomnia.allowSleepAgain()
   }
 
   progressTimer() {
@@ -90,9 +116,10 @@ export class HomePage {
       let now = new Date().getTime();
 
       // Find the distance between now an the count down date
-      let distance = now - countDownDate.getTime();
+      var distance = now - countDownDate.getTime();
 
       // Time calculations for hours, minutes and seconds
+
       this.elapsed.h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       this.elapsed.m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
       this.elapsed.s = Math.floor((distance % (1000 * 60)) / 1000);
@@ -102,12 +129,11 @@ export class HomePage {
       this.elapsed.s = this.pad(this.elapsed.s, 2);
 
 
-
-    },1000)
+    }, 1000)
   }
 
   pad(num, size) {
-    let s = num+"";
+    let s = num + "";
     while (s.length < size) s = "0" + s;
     return s;
   }
